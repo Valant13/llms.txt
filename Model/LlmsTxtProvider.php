@@ -1,41 +1,32 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Model;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
 
-class Generator
+class LlmsTxtProvider
 {
     public function __construct(
+        private readonly StoreManagerInterface $storeManager,
         private readonly Config $config,
-        private readonly StoreManagerInterface $storeManager
-    ) {
-    }
+    ) {}
 
-    public function generate(?int $storeId = null): string
+    public function get(int $storeId): string
     {
-        $storeId = $storeId ?? (int) $this->storeManager->getStore()->getId();
-
-        // Check if using manual content
         if ($this->config->shouldUseManualContent($storeId)) {
             return $this->config->getManualContent($storeId);
         }
 
-        // Otherwise use AI-generated content
         $generatedContent = $this->config->getGeneratedContent($storeId);
 
         if (!empty($generatedContent)) {
             return $generatedContent;
         }
 
-        // Fallback: Basic content if nothing is generated yet
-        return $this->generateFallbackContent($storeId);
+        return $this->getFallbackContent($storeId);
     }
 
-    private function generateFallbackContent(int $storeId): string
+    private function getFallbackContent(int $storeId): string
     {
         $siteName = $this->config->getSiteName($storeId);
         if (empty($siteName)) {
@@ -54,12 +45,5 @@ class Generator
         $content .= "Use the 'Generate with AI' button to automatically create content from your store data.";
 
         return $content;
-    }
-
-    public function estimateTokenCount(string $content): int
-    {
-        // Rough estimation: 1 token ≈ 0.75 words
-        $wordCount = str_word_count($content);
-        return (int) ceil($wordCount * 1.3);
     }
 }

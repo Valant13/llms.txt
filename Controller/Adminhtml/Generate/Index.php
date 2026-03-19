@@ -7,28 +7,17 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\Config;
-use MageOS\LlmTxt\Model\Generator;
-use MageOS\LlmTxt\Model\OpenAi\Client as OpenAiClient;
-use MageOS\LlmTxt\Model\PromptBuilder;
-use MageOS\LlmTxt\Model\StoreDataCollector;
+use MageOS\LlmTxt\Model\LlmsTxtGenerator;
 
 class Index implements HttpPostActionInterface
 {
     public const ADMIN_RESOURCE = 'MageOS_LlmTxt::config';
-    public const INSTRUCTIONS = 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.';
-    public const MAX_OUTPUT_TOKENS = 2000;
-    public const TEMPERATURE = 0.7;
 
     public function __construct(
         private readonly RequestInterface $request,
         private readonly JsonFactory $resultJsonFactory,
-        private readonly OpenAiClient $openAiClient,
-        private readonly StoreDataCollector $storeDataCollector,
-        private readonly Generator $generator,
         private readonly StoreManagerInterface $storeManager,
-        private readonly PromptBuilder $promptBuilder,
-        private readonly Config $config,
+        private readonly LlmsTxtGenerator $llmsTxtGenerator,
     ) {}
 
     public function execute(): Json
@@ -41,20 +30,8 @@ class Index implements HttpPostActionInterface
                 $storeId = (int) $this->storeManager->getDefaultStoreView()->getId();
             }
 
-            // Collect store data
-            $storeData = $this->storeDataCollector->collect($storeId);
-
-            // Generate via OpenAI
-            $generatedContent = $this->openAiClient->postResponses(
-                $this->config->getOpenAiModel(),
-                $this->promptBuilder->buildPrompt($storeData),
-                self::INSTRUCTIONS,
-                self::MAX_OUTPUT_TOKENS,
-                self::TEMPERATURE
-            );
-
-            // Estimate tokens
-            $tokenCount = $this->generator->estimateTokenCount($generatedContent);
+            $generatedContent = $this->llmsTxtGenerator->generateLlmsTxt($storeId);
+            $tokenCount = $this->llmsTxtGenerator->estimateTokenCount($generatedContent);
 
             return $result->setData([
                 'success' => true,
