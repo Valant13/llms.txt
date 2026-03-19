@@ -17,12 +17,15 @@ class Config
     public const XML_PATH_MANUAL_CONTENT = 'llmtxt/content/manual_content';
     public const XML_PATH_OPENAI_API_KEY = 'llmtxt/ai_generation/openai_api_key';
     public const XML_PATH_OPENAI_MODEL = 'llmtxt/ai_generation/openai_model';
+    public const XML_PATH_CATEGORY_IDS = 'llmtxt/ai_generation/category_ids';
+    public const XML_PATH_PRODUCT_SKUS = 'llmtxt/ai_generation/product_skus';
+    public const XML_PATH_CMS_PAGE_IDENTIFIERS = 'llmtxt/ai_generation/cms_page_identifiers';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig,
         private readonly EncryptorInterface $encryptor,
-    ) {
-    }
+        private readonly CsvSerializer $csvSerializer,
+    ) {}
 
     public function isEnabled(?int $storeId = null): bool
     {
@@ -104,6 +107,39 @@ class Config
             self::XML_PATH_OPENAI_MODEL,
             ScopeInterface::SCOPE_STORE,
             $storeId
-        ) ?: 'gpt-4o-mini';
+        );
+    }
+
+    public function getCategoryIds(?int $storeId = null): array
+    {
+        $value = (string) $this->scopeConfig->getValue(
+            self::XML_PATH_CATEGORY_IDS,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
+        );
+
+        return array_map('intval', $this->csvSerializer->unserialize($value));
+    }
+
+    public function getProductSkus(?int $storeId = null): array
+    {
+        return $this->csvSerializer->unserialize(
+            (string) $this->scopeConfig->getValue(
+                self::XML_PATH_PRODUCT_SKUS,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+        );
+    }
+
+    public function getCmsPageIdentifiers(?int $storeId = null): array
+    {
+        return $this->csvSerializer->unserialize(
+            (string) $this->scopeConfig->getValue(
+                self::XML_PATH_CMS_PAGE_IDENTIFIERS,
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            )
+        );
     }
 }

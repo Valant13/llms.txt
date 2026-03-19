@@ -50,7 +50,7 @@
                     </depends>
                 </field>
             </group>
-            <group id="ai_generation" translate="label" type="text" sortOrder="20" showInDefault="1">
+            <group id="ai_generation" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>AI-Powered Generation</label>
                 <comment><![CDATA[
                     <p>Use AI to intelligently generate llms.txt content from your store data.</p>
@@ -66,14 +66,37 @@
                 </field>
                 <field id="openai_model" translate="label comment" type="select" sortOrder="20" showInDefault="1">
                     <label>AI Model</label>
-                    <comment>GPT-4o Mini is recommended for speed and cost</comment>
+                    <comment>GPT-5.4 is recommended</comment>
                     <source_model>MageOS\LlmTxt\Model\Config\Source\OpenAiModel</source_model>
                     <depends>
                         <field id="*/*/enabled">1</field>
                     </depends>
                 </field>
-                <field id="generate_button" translate="label" type="button" sortOrder="30" showInDefault="1">
-                    <label>Generate Content</label>
+                <field id="category_ids" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Category IDs</label>
+                    <comment><![CDATA[Comma-separated list of <b>category IDs</b> to include (e.g. 5,12,34).]]></comment>
+                    <backend_model>MageOS\LlmTxt\Model\Config\Backend\CommaSeparatedIntegers</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="product_skus" translate="label comment" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Product SKUs</label>
+                    <comment><![CDATA[Comma-separated list of <b>product SKUs</b> to include (e.g. SKU-001,SKU-002).]]></comment>
+                    <backend_model>MageOS\LlmTxt\Model\Config\Backend\CommaSeparatedStrings</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="cms_page_identifiers" translate="label comment" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>CMS Page Identifiers</label>
+                    <comment><![CDATA[Comma-separated list of <b>CMS page identifiers</b> to include (e.g. about-us,contact-us).]]></comment>
+                    <backend_model>MageOS\LlmTxt\Model\Config\Backend\CommaSeparatedStrings</backend_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="generate_button" translate="label" type="button" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <frontend_model>MageOS\LlmTxt\Block\Adminhtml\System\Config\GenerateButton</frontend_model>
                     <depends>
                         <field id="*/*/enabled">1</field>

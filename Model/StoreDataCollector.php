@@ -1,14 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Model;
 
-use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
-use Magento\Cms\Api\PageRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Cms\Model\ResourceModel\Page\CollectionFactory as PageCollectionFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -18,10 +14,9 @@ class StoreDataCollector
         private readonly StoreManagerInterface $storeManager,
         private readonly CategoryCollectionFactory $categoryCollectionFactory,
         private readonly ProductCollectionFactory $productCollectionFactory,
-        private readonly PageRepositoryInterface $pageRepository,
-        private readonly SearchCriteriaBuilder $searchCriteriaBuilder
-    ) {
-    }
+        private readonly PageCollectionFactory $pageCollectionFactory,
+        private readonly Config $config,
+    ) {}
 
     public function collect(int $storeId): array
     {
@@ -38,13 +33,17 @@ class StoreDataCollector
 
     private function collectCategories(int $storeId, string $baseUrl): array
     {
+        $categoryIds = $this->config->getCategoryIds($storeId);
+        if (!$categoryIds) {
+            return [];
+        }
+
         $collection = $this->categoryCollectionFactory->create();
         $collection->addAttributeToSelect(['name', 'url_key', 'description'])
             ->addAttributeToFilter('is_active', 1)
-            ->addAttributeToFilter('level', 2) // Only top-level categories
+            ->addAttributeToFilter('entity_id', ['in' => $categoryIds])
             ->setStoreId($storeId)
-            ->setOrder('position', 'ASC')
-            ->setPageSize(10);
+            ->setOrder('position', 'ASC');
 
         $categories = [];
         foreach ($collection as $category) {
@@ -60,14 +59,17 @@ class StoreDataCollector
 
     private function collectProducts(int $storeId, string $baseUrl): array
     {
+        $productSkus = $this->config->getProductSkus($storeId);
+        if (!$productSkus) {
+            return [];
+        }
+
         $collection = $this->productCollectionFactory->create();
-        $collection->addAttributeToSelect(['name', 'url_key', 'short_description'])
-            ->addAttributeToFilter('status', 1)
-            ->addAttributeToFilter('visibility', ['in' => [2, 3, 4]])
+        $collection->addAttributeToSelect(['name', 'url_key', 'short_description', 'sku'])
+            ->addAttributeToFilter('sku', ['in' => $productSkus])
             ->setStoreId($storeId)
             ->addStoreFilter($storeId)
-            ->setOrder('created_at', 'DESC')
-            ->setPageSize(15); // 3-5 products per category, max 10 categories
+            ->setOrder('created_at', 'DESC');
 
         $products = [];
         foreach ($collection as $product) {
@@ -83,30 +85,20 @@ class StoreDataCollector
 
     private function collectCmsPages(int $storeId, string $baseUrl): array
     {
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter('is_active', 1)
-            ->addFilter('store_id', [$storeId, 0], 'in')
-            ->create();
-
-        try {
-            $pages = $this->pageRepository->getList($searchCriteria)->getItems();
-        } catch (NoSuchEntityException $e) {
+        $pageIdentifiers = $this->config->getCmsPageIdentifiers($storeId);
+        if (!$pageIdentifiers) {
             return [];
         }
 
-        $priorityIdentifiers = ['about-us', 'contact-us', 'customer-service', 'shipping', 'returns'];
-        $cmsPages = [];
+        $collection = $this->pageCollectionFactory->create();
+        $collection->addFieldToSelect(['identifier', 'title'])
+            ->addFieldToFilter('identifier', ['in' => $pageIdentifiers])
+            ->addStoreFilter($storeId)
+            ->setOrder('created_at', 'DESC');
 
-        foreach ($pages as $page) {
+        $pages = [];
+        foreach ($collection as $page) {
             $identifier = (string) $page->getIdentifier();
-
-            if ($identifier === 'home' || $identifier === 'no-route') {
-                continue;
-            }
-
-            if (!in_array($identifier, $priorityIdentifiers, true)) {
-                continue; // Only include priority pages
-            }
 
             $cmsPages[] = [
                 'title' => (string) $page->getTitle(),
