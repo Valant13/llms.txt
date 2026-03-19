@@ -48,7 +48,6 @@ class Client
                     'instructions' => 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.',
                     'input' => $prompt,
                     'max_output_tokens' => 2000,
-                    'temperature' => 0.7,
                 ],
             ]);
 
