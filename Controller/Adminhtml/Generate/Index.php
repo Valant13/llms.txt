@@ -18,6 +18,7 @@ class Index implements HttpPostActionInterface
     public const ADMIN_RESOURCE = 'MageOS_LlmTxt::config';
     public const INSTRUCTIONS = 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.';
     public const MAX_OUTPUT_TOKENS = 2000;
+    public const TEMPERATURE = 0.7;
 
     public function __construct(
         private readonly RequestInterface $request,
@@ -48,7 +49,8 @@ class Index implements HttpPostActionInterface
                 $this->config->getOpenAiModel(),
                 $this->promptBuilder->buildPrompt($storeData),
                 self::INSTRUCTIONS,
-                self::MAX_OUTPUT_TOKENS
+                self::MAX_OUTPUT_TOKENS,
+                self::TEMPERATURE
             );
 
             // Estimate tokens

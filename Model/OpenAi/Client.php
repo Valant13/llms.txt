@@ -3,18 +3,16 @@
 namespace MageOS\LlmTxt\Model\OpenAi;
 
 use GuzzleHttp\Client as HttpClient;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use MageOS\LlmTxt\Model\Config;
-use Psr\Log\LoggerInterface;
 
 class Client
 {
-    public const API_ENDPOINT = 'https://api.openai.com/v1/responses';
+    public const BASE_URL = 'https://api.openai.com';
     public const TIMEOUT = 60;
 
     public function __construct(
         private readonly HttpClient $httpClient,
-        private readonly LoggerInterface $logger,
         private readonly Config $config,
     ) {}
 
@@ -30,44 +28,15 @@ class Client
             throw new \RuntimeException('OpenAI API key is not configured');
         }
 
+        $requestBody = $this->buildRequestBody($apiKey, $model, $prompt, $instructions, $maxOutputTokens, $temperature);
+
         try {
-            $response = $this->httpClient->post(self::API_ENDPOINT, [
-                'timeout' => self::TIMEOUT,
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $apiKey,
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => [
-                    'model' => $model,
-                    'instructions' => $instructions,
-                    'input' => $prompt,
-                    'max_output_tokens' => $maxOutputTokens,
-                ],
-            ]);
+            $response = $this->httpClient->post(self::BASE_URL . '/v1/responses', $requestBody);
+            $responseBody = json_decode((string) $response->getBody(), true);
 
-            $body = json_decode((string) $response->getBody(), true);
-
-            if (!empty($body['output_text']) && is_string($body['output_text'])) {
-                return trim($body['output_text']);
-            }
-
-            if (!empty($body['output']) && is_array($body['output'])) {
-                $text = $this->extractTextFromResponsesOutput($body['output']);
-                if ($text !== '') {
-                    return trim($text);
-                }
-            }
-
-            throw new \RuntimeException('Invalid response from OpenAI API');
-
-        } catch (GuzzleException $e) {
-            $this->logger->error('OpenAI API request failed', [
-                'exception' => $e->getMessage(),
-            ]);
-
-            $statusCode = method_exists($e, 'getResponse') && $e->getResponse()
-                ? $e->getResponse()->getStatusCode()
-                : (int) $e->getCode();
+            return $this->getTextFromResponseBody($responseBody);
+        } catch (RequestException $e) {
+            $statusCode = $e->getResponse()->getStatusCode();
 
             if ($statusCode === 401) {
                 throw new \RuntimeException('Invalid OpenAI API key. Please check your credentials.');
@@ -79,45 +48,70 @@ class Client
 
             throw new \RuntimeException('Failed to generate content: ' . $e->getMessage(), 0, $e);
         } catch (\Throwable $e) {
-            $this->logger->error('OpenAI API request failed', [
-                'exception' => $e->getMessage(),
-            ]);
-
-            if ((int) $e->getCode() === 401) {
-                throw new \RuntimeException('Invalid OpenAI API key. Please check your credentials.');
-            }
-
-            if ((int) $e->getCode() === 429) {
-                throw new \RuntimeException('OpenAI rate limit reached. Please try again in a few moments.');
-            }
-
             throw new \RuntimeException('Failed to generate content: ' . $e->getMessage(), 0, $e);
         }
     }
 
-    /**
-     * Extract plain text from Responses API output items.
-     */
-    private function extractTextFromResponsesOutput(array $output): string
-    {
-        $parts = [];
+    private function buildRequestBody(
+        string $apiKey,
+        string $model,
+        string $prompt,
+        string $instructions,
+        int $maxOutputTokens,
+        float $temperature
+    ): array {
+        $body = [
+            'timeout' => self::TIMEOUT,
+            'headers' => [
+                'Authorization' => 'Bearer ' . $apiKey,
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'model' => $model,
+                'instructions' => $instructions,
+                'input' => $prompt,
+                'max_output_tokens' => $maxOutputTokens,
+            ],
+        ];
 
-        foreach ($output as $item) {
-            if (($item['type'] ?? null) !== 'message') {
-                continue;
-            }
-
-            if (empty($item['content']) || !is_array($item['content'])) {
-                continue;
-            }
-
-            foreach ($item['content'] as $contentItem) {
-                if (($contentItem['type'] ?? null) === 'output_text' && isset($contentItem['text'])) {
-                    $parts[] = $contentItem['text'];
-                }
-            }
+        if ($this->isTemperatureSupported($model)) {
+            $body['json']['temperature'] = $temperature;
         }
 
-        return trim(implode("\n", $parts));
+        return $body;
+    }
+
+    private function getTextFromResponseBody(array $body): string
+    {
+        $output = $body['output'] ?? null;
+        if (is_array($output) && $output) {
+            $parts = [];
+
+            foreach ($output as $outputItem) {
+                if (($outputItem['type'] ?? null) !== 'message') {
+                    continue;
+                }
+
+                $content = $outputItem['content'] ?? null;
+                if (!is_array($content) || !$content) {
+                    continue;
+                }
+
+                foreach ($content as $contentItem) {
+                    if (($contentItem['type'] ?? null) === 'output_text' && isset($contentItem['text'])) {
+                        $parts[] = $contentItem['text'];
+                    }
+                }
+            }
+
+            return trim(implode("\n", $parts));
+        }
+
+        throw new \RuntimeException('Invalid response from OpenAI API');
+    }
+
+    private function isTemperatureSupported(string $model): bool
+    {
+        return str_contains($model, 'gpt-4');
     }
 }
