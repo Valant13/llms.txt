@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 class Client
 {
-    private const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
+    private const API_ENDPOINT = 'https://api.openai.com/v1/responses';
     private const XML_PATH_API_KEY = 'llmtxt/ai_generation/openai_api_key';
     private const XML_PATH_MODEL = 'llmtxt/ai_generation/openai_model';
     private const TIMEOUT = 30;
@@ -45,60 +45,89 @@ class Client
                 ],
                 'json' => [
                     'model' => $model,
-                    'messages' => [
-                        [
-                            'role' => 'system',
-                            'content' => 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.'
-                        ],
-                        [
-                            'role' => 'user',
-                            'content' => $prompt
-                        ]
-                    ],
-                    'max_tokens' => 2000,
+                    'instructions' => 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.',
+                    'input' => $prompt,
+                    'max_output_tokens' => 2000,
                     'temperature' => 0.7,
                 ],
             ]);
 
             $body = json_decode((string) $response->getBody(), true);
 
-            if (!isset($body['choices'][0]['message']['content'])) {
-                throw new \RuntimeException('Invalid response from OpenAI API');
+            if (!empty($body['output_text']) && is_string($body['output_text'])) {
+                return trim($body['output_text']);
             }
 
-            return trim($body['choices'][0]['message']['content']);
+            if (!empty($body['output']) && is_array($body['output'])) {
+                $text = $this->extractTextFromResponsesOutput($body['output']);
+                if ($text !== '') {
+                    return trim($text);
+                }
+            }
+
+            throw new \RuntimeException('Invalid response from OpenAI API');
 
         } catch (GuzzleException $e) {
             $this->logger->error('OpenAI API request failed', [
                 'exception' => $e->getMessage(),
-                'store_id' => $storeId
+                'store_id' => $storeId,
             ]);
 
-            if ($e->getCode() === 401) {
+            $statusCode = method_exists($e, 'getResponse') && $e->getResponse()
+                ? $e->getResponse()->getStatusCode()
+                : (int) $e->getCode();
+
+            if ($statusCode === 401) {
                 throw new \RuntimeException('Invalid OpenAI API key. Please check your credentials.');
             }
 
-            if ($e->getCode() === 429) {
+            if ($statusCode === 429) {
                 throw new \RuntimeException('OpenAI rate limit reached. Please try again in a few moments.');
             }
 
-            throw new \RuntimeException('Failed to generate content: ' . $e->getMessage());
-        } catch (\Exception $e) {
+            throw new \RuntimeException('Failed to generate content: ' . $e->getMessage(), 0, $e);
+        } catch (\Throwable $e) {
             $this->logger->error('OpenAI API request failed', [
                 'exception' => $e->getMessage(),
-                'store_id' => $storeId
+                'store_id' => $storeId,
             ]);
 
-            if ($e->getCode() === 401) {
+            if ((int) $e->getCode() === 401) {
                 throw new \RuntimeException('Invalid OpenAI API key. Please check your credentials.');
             }
 
-            if ($e->getCode() === 429) {
+            if ((int) $e->getCode() === 429) {
                 throw new \RuntimeException('OpenAI rate limit reached. Please try again in a few moments.');
             }
 
-            throw new \RuntimeException('Failed to generate content: ' . $e->getMessage());
+            throw new \RuntimeException('Failed to generate content: ' . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Extract plain text from Responses API output items.
+     */
+    private function extractTextFromResponsesOutput(array $output): string
+    {
+        $parts = [];
+
+        foreach ($output as $item) {
+            if (($item['type'] ?? null) !== 'message') {
+                continue;
+            }
+
+            if (empty($item['content']) || !is_array($item['content'])) {
+                continue;
+            }
+
+            foreach ($item['content'] as $contentItem) {
+                if (($contentItem['type'] ?? null) === 'output_text' && isset($contentItem['text'])) {
+                    $parts[] = $contentItem['text'];
+                }
+            }
+        }
+
+        return trim(implode("\n", $parts));
     }
 
     private function buildPrompt(array $storeData): string
