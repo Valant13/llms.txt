@@ -21,7 +21,7 @@ The llms.txt format helps AI systems understand website content. Follow this str
 Optional additional context paragraph
 
 ## Section Name
-- [Link Title] (URL): Brief description (1 sentence)
+- [Link Title](URL): Brief description (1 sentence)
 
 REQUIREMENTS:
 1. Start with store name as H1
@@ -59,7 +59,7 @@ PROMPT;
             $description = mb_substr($category['description'] ?? '', 0, 100);
             $url = $category['url'];
 
-            $lines[] = "- $name ($url): $description";
+            $lines[] = "- [$name]($url): $description";
         }
 
         return implode("\n", $lines) ?: 'No categories available';
@@ -78,7 +78,7 @@ PROMPT;
             $description = mb_substr($product['description'] ?? '', 0, 80);
             $url = $product['url'];
 
-            $lines[] = "- $name ($url): $description";
+            $lines[] = "- [$name]($url): $description";
         }
 
         return implode("\n", $lines) ?: 'No products available';
@@ -92,7 +92,7 @@ PROMPT;
             $identifier = $page['identifier'];
             $url = $page['url'];
 
-            $lines[] = "- $title ($url): $identifier";
+            $lines[] = "- [$title]($url): $identifier";
         }
 
         return implode("\n", $lines) ?: 'No pages available';

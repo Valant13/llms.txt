@@ -8,8 +8,10 @@ use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory as CategoryCo
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
 use Magento\Cms\Model\Page;
 use Magento\Cms\Model\ResourceModel\Page\CollectionFactory as PageCollectionFactory;
+use Magento\Framework\App\Area;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\StoreManagerInterface;
 
 class StoreDataCollector
@@ -17,6 +19,7 @@ class StoreDataCollector
     public function __construct(
         private readonly StoreManagerInterface $storeManager,
         private readonly ScopeConfigInterface $scopeConfig,
+        private readonly Emulation $emulation,
         private readonly CategoryCollectionFactory $categoryCollectionFactory,
         private readonly ProductCollectionFactory $productCollectionFactory,
         private readonly PageCollectionFactory $pageCollectionFactory,
@@ -26,17 +29,25 @@ class StoreDataCollector
 
     public function collect(int $storeId): array
     {
-        $store = $this->storeManager->getStore($storeId);
-        $storeLocale = (string)$this->scopeConfig->getValue('general/locale/code');
+        $this->emulation->startEnvironmentEmulation($storeId, Area::AREA_FRONTEND, true);
 
-        return [
-            'store_name' => $store->getName(),
-            'store_url' => $store->getBaseUrl(),
-            'store_locale' => $storeLocale,
-            'categories' => $this->collectCategories($storeId),
-            'products' => $this->collectProducts($storeId),
-            'cms_pages' => $this->collectCmsPages($storeId),
-        ];
+        try {
+            $store = $this->storeManager->getStore($storeId);
+            $storeLocale = (string)$this->scopeConfig->getValue('general/locale/code');
+
+            $data = [
+                'store_name' => $store->getName(),
+                'store_url' => $store->getBaseUrl(),
+                'store_locale' => $storeLocale,
+                'categories' => $this->collectCategories($storeId),
+                'products' => $this->collectProducts($storeId),
+                'cms_pages' => $this->collectCmsPages($storeId),
+            ];
+        } finally {
+            $this->emulation->stopEnvironmentEmulation();
+        }
+
+        return $data;
     }
 
     private function collectCategories(int $storeId): array
