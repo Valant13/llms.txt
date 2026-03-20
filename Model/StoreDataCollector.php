@@ -12,6 +12,7 @@ use Magento\Framework\App\Area;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\App\Emulation;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use MageOS\LlmTxt\Model\Data\SectionItemFactory;
 use MageOS\LlmTxt\Model\Data\StoreContext;
@@ -38,7 +39,12 @@ class StoreDataCollector
 
         try {
             $store = $this->storeManager->getStore($storeId);
-            $storeLocale = (string) $this->scopeConfig->getValue('general/locale/code');
+
+            $storeLocale = (string) $this->scopeConfig->getValue(
+                'general/locale/code',
+                ScopeInterface::SCOPE_STORE,
+                $storeId
+            );
 
             $categories = $this->collectCategories($storeId);
             $products = $this->collectProducts($storeId);
@@ -67,17 +73,21 @@ class StoreDataCollector
         }
 
         $collection = $this->categoryCollectionFactory->create();
-        $collection->addAttributeToSelect(['name', 'url_key', 'description'])
+        $collection->addAttributeToSelect(['name', 'url_key', 'meta_description'])
             ->addAttributeToFilter('entity_id', ['in' => $categoryIds])
             ->setOrder('position', 'ASC');
 
         $categories = [];
         /** @var Category $category */
         foreach ($collection as $category) {
+            $name = (string) $category->getName();
+            $url = $category->getUrl();
+            $metaDescription = (string) $category->getMetaDescription();
+
             $categories[] = $this->sectionItemFactory->create()
-                ->setName((string) $category->getName())
-                ->setUrl($category->getUrl())
-                ->setDescription(strip_tags((string) $category->getDescription()));
+                ->setName($name)
+                ->setUrl($url)
+                ->setDescription($metaDescription ?: $name);
         }
 
         return $categories;
@@ -91,17 +101,21 @@ class StoreDataCollector
         }
 
         $collection = $this->productCollectionFactory->create();
-        $collection->addAttributeToSelect(['name', 'url_key', 'short_description', 'sku'])
+        $collection->addAttributeToSelect(['name', 'url_key', 'meta_description', 'sku'])
             ->addAttributeToFilter('sku', ['in' => $productSkus])
             ->setOrder('created_at', 'DESC');
 
         $products = [];
         /** @var Product $product */
         foreach ($collection as $product) {
+            $name = (string) $product->getName();
+            $metaDescription = (string) $product->getMetaDescription();
+            $url = $product->getProductUrl();
+
             $products[] = $this->sectionItemFactory->create()
-                ->setName((string) $product->getName())
-                ->setUrl($product->getProductUrl())
-                ->setDescription(strip_tags((string) $product->getShortDescription()));
+                ->setName($name)
+                ->setUrl($url)
+                ->setDescription($metaDescription ?: $name);
         }
 
         return $products;
@@ -124,11 +138,14 @@ class StoreDataCollector
         /** @var Page $page */
         foreach ($collection as $page) {
             $identifier = (string) $page->getIdentifier();
+            $title = (string) $page->getTitle();
+            $url = $this->urlBuilder->getUrl(null, ['_direct' => $identifier]);
+            $metaDescription = (string) $page->getMetaDescription();
 
             $pages[] = $this->sectionItemFactory->create()
-                ->setName((string) $page->getTitle())
-                ->setUrl($this->urlBuilder->getUrl(null, ['_direct' => $identifier]))
-                ->setDescription((string) $page->getMetaDescription() ?: (string) $page->getTitle());
+                ->setName($title)
+                ->setUrl($url)
+                ->setDescription($metaDescription ?: $title);
         }
 
         return $pages;
