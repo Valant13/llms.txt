@@ -88,11 +88,11 @@ PROMPT;
     {
         $lines = [];
         foreach ($pages as $page) {
-            $title = $page['title'];
-            $identifier = $page['identifier'];
+            $name = $page['name'];
+            $description = $page['description'];
             $url = $page['url'];
 
-            $lines[] = "- [$title]($url): $identifier";
+            $lines[] = "- [$name]($url): $description";
         }
 
         return implode("\n", $lines) ?: 'No pages available';

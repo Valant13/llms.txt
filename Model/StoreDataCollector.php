@@ -35,7 +35,7 @@ class StoreDataCollector
             $store = $this->storeManager->getStore($storeId);
             $storeLocale = (string)$this->scopeConfig->getValue('general/locale/code');
 
-            $data = [
+            $storeData = [
                 'store_name' => $store->getName(),
                 'store_url' => $store->getBaseUrl(),
                 'store_locale' => $storeLocale,
@@ -47,7 +47,7 @@ class StoreDataCollector
             $this->emulation->stopEnvironmentEmulation();
         }
 
-        return $data;
+        return $storeData;
     }
 
     private function collectCategories(int $storeId): array
@@ -108,7 +108,7 @@ class StoreDataCollector
         }
 
         $collection = $this->pageCollectionFactory->create();
-        $collection->addFieldToSelect(['identifier', 'title'])
+        $collection->addFieldToSelect(['identifier', 'title', 'meta_description'])
             ->addFieldToFilter('identifier', ['in' => $pageIdentifiers])
             ->addStoreFilter($storeId)
             ->setOrder('creation_time', 'DESC');
@@ -119,9 +119,9 @@ class StoreDataCollector
             $identifier = (string) $page->getIdentifier();
 
             $pages[] = [
-                'title' => (string) $page->getTitle(),
-                'url' => $this->urlBuilder->getUrl(null, ['_direct' => $page->getIdentifier()]),
-                'identifier' => $identifier,
+                'name' => (string) $page->getTitle(),
+                'url' => $this->urlBuilder->getUrl(null, ['_direct' => $identifier]),
+                'description' => (string) $page->getMetaDescription() ?: (string) $page->getTitle(),
             ];
         }
 
