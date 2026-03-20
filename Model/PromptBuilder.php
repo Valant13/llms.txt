@@ -36,7 +36,8 @@ REQUIREMENTS:
 5. Keep TOTAL output under 1500 words / 2000 tokens
 6. Only include the most important/representative items
 7. Make descriptions compelling but brief
-8. Write all text only in the language of the store locale
+8. Remove repetitive marketing phrases and SEO-like noise
+9. Write all text only in the language of the store locale
 
 STORE DATA:
 Store Name: {$storeData->getName()}
