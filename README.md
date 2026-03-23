@@ -1,10 +1,10 @@
-# LLM.txt for Magento 2 / Mage-OS
+# LLMs.txt for Magento 2 / Mage-OS
 
-AI-powered LLM.txt generation module for Magento 2 and Mage-OS stores. Automatically creates optimized `llms.txt` files using OpenAI to help AI systems understand your store content.
+AI-powered LLMs.txt generation module for Magento 2 and Mage-OS stores. Automatically creates optimized `llms.txt` files using OpenAI to help AI systems understand your store content.
 
-## What is LLM.txt?
+## What is LLMs.txt?
 
-LLM.txt is a proposed standard (similar to `robots.txt`) that helps AI systems like ChatGPT, Claude, and others better understand your website by providing a concise, structured summary of your most important content.
+LLMs.txt is a proposed standard (similar to `robots.txt`) that helps AI systems like ChatGPT, Claude, and others better understand your website by providing a concise, structured summary of your most important content.
 
 Learn more: [llmstxt.org](https://llmstxt.org)
 
@@ -31,7 +31,7 @@ bin/magento cache:flush
 
 ## Configuration
 
-1. Navigate to: **Stores → Configuration → AI → LLM.txt**
+1. Navigate to: **Stores → Configuration → AI → LLMs.txt**
 
 2. **General Settings**
    - Enable the module
@@ -157,7 +157,7 @@ Contributions welcome! Please:
 
 ## Related Resources
 
-- [LLM.txt Official Site](https://llmstxt.org)
-- [LLM.txt Directory](https://llmtxt.app)
+- [LLMs.txt Official Site](https://llmstxt.org)
+- [LLMs.txt Directory](https://llmtxt.app)
 - [OpenAI Platform](https://platform.openai.com)
 - [Mage-OS](https://mage-os.org)

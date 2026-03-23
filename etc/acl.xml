@@ -6,7 +6,7 @@
                 <resource id="Magento_Backend::stores">
                     <resource id="Magento_Backend::stores_settings">
                         <resource id="Magento_Config::config">
-                            <resource id="MageOS_LlmTxt::config" title="LLM.txt Configuration" sortOrder="100"/>
+                            <resource id="MageOS_LlmTxt::config" title="LLMs.txt Configuration" sortOrder="100"/>
                         </resource>
                     </resource>
                 </resource>

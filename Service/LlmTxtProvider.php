@@ -42,7 +42,7 @@ class LlmTxtProvider
             $content .= "> {$siteDescription}\n\n";
         }
 
-        $content .= "Please configure your LLM.txt content in the admin panel.\n";
+        $content .= "Please configure your LLMs.txt content in the admin panel.\n";
         $content .= "Use the 'Generate with AI' button to automatically create content from your store data.";
 
         return $content;

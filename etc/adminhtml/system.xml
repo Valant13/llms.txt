@@ -5,17 +5,17 @@
             <label>AI</label>
         </tab>
         <section id="llmtxt" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>LLM.txt</label>
+            <label>LLMs.txt</label>
             <tab>ai_</tab>
             <resource>MageOS_LlmTxt::config</resource>
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Settings</label>
                 <comment><![CDATA[
-                    <p>LLM.txt is a standard for helping AI systems understand your store's content.</p>
+                    <p>LLMs.txt is a standard for helping AI systems understand your store's content.</p>
                     <p>Learn more at <a href="https://llmstxt.org" target="_blank">llmstxt.org</a></p>
                 ]]></comment>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable LLM.txt</label>
+                    <label>Enable LLMs.txt</label>
                     <comment>When enabled, your store will serve an llms.txt file at /llms.txt</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
@@ -73,7 +73,7 @@
                 </field>
                 <field id="category_ids" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Category IDs</label>
-                    <comment><![CDATA[Comma-separated list of <b>category IDs</b> to include (e.g. 5,12,34).]]></comment>
+                    <comment><![CDATA[Comma-separated list of <b>category IDs</b> to include (e.g. 5, 12, 34). The <b>Meta Description</b> of each category is used as its description in the generated content.]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedIntegers</backend_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -81,7 +81,7 @@
                 </field>
                 <field id="product_skus" translate="label comment" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Product SKUs</label>
-                    <comment><![CDATA[Comma-separated list of <b>product SKUs</b> to include (e.g. SKU-001,SKU-002).]]></comment>
+                    <comment><![CDATA[Comma-separated list of <b>product SKUs</b> to include (e.g. SKU-001, SKU-002). The <b>Meta Description</b> of each product is used as its description in the generated content.]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedStrings</backend_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -89,7 +89,7 @@
                 </field>
                 <field id="cms_page_identifiers" translate="label comment" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CMS Page Identifiers</label>
-                    <comment><![CDATA[Comma-separated list of <b>CMS page identifiers</b> to include (e.g. about-us,contact-us).]]></comment>
+                    <comment><![CDATA[Comma-separated list of <b>CMS page identifiers</b> to include (e.g. about-us, contact-us). The <b>Meta Description</b> of each page is used as its description in the generated content.]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedStrings</backend_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -111,7 +111,7 @@
                 </field>
             </group>
             <group id="content" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>LLM.txt Content</label>
+                <label>LLMs.txt Content</label>
                 <comment>Review and edit the AI-generated content or write your own</comment>
                 <field id="generated_content" translate="label comment" type="textarea" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Generated Content</label>
@@ -141,8 +141,8 @@
                 <label>Information</label>
                 <comment><![CDATA[
                     <div style="padding: 10px; background: #f5f5f5; border-left: 3px solid #eb5202;">
-                        <h3 style="margin-top:0;">What is LLM.txt?</h3>
-                        <p>LLM.txt is a proposed standard for helping AI systems (like ChatGPT, Claude, etc.) understand your website better.</p>
+                        <h3 style="margin-top:0;">What is LLMs.txt?</h3>
+                        <p>LLMs.txt is a proposed standard for helping AI systems (like ChatGPT, Claude, etc.) understand your website better.</p>
                         <p>It's similar to robots.txt, but instead of blocking access, it <strong>guides AI</strong> to your most important content.</p>
 
                         <h4>Best Practices:</h4>
@@ -153,10 +153,10 @@
                             <li>Update when you add major content</li>
                         </ul>
 
-                        <h4>View Your LLM.txt:</h4>
+                        <h4>View Your LLMs.txt:</h4>
                         <p>After saving and flushing cache, visit: <code>https://yourdomain.com/llms.txt</code></p>
 
-                        <p><a href="https://llmstxt.org" target="_blank">Learn more about the LLM.txt standard →</a></p>
+                        <p><a href="https://llmstxt.org" target="_blank">Learn more about the LLMs.txt standard →</a></p>
                     </div>
                 ]]></comment>
             </group>

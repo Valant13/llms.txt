@@ -54,7 +54,7 @@ require([
                     // Show success alert
                     alert({
                         title: $t('Success'),
-                        content: $t('LLM.txt content generated successfully with %1 tokens. Review and save when ready.').replace('%1', response.tokens)
+                        content: $t('LLMs.txt content generated successfully with %1 tokens. Review and save when ready.').replace('%1', response.tokens)
                     });
                 } else {
                     statusMessage.html('<span style="color: #e02b27;">✗ ' + response.message + '</span>');
