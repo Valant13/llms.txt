@@ -2,9 +2,9 @@
 
 namespace MageOS\LlmTxt\Model\Data\OpenAi;
 
-use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Framework\DataObject;
 
-class ResponsesParams extends AbstractExtensibleModel
+class ResponsesParams extends DataObject
 {
     public const MODEL = 'model';
     public const PROMPT = 'prompt';
@@ -60,15 +60,5 @@ class ResponsesParams extends AbstractExtensibleModel
     public function setTemperature(float $temperature): self
     {
         return $this->setData(self::TEMPERATURE, $temperature);
-    }
-
-    public function getExtensionAttributes()
-    {
-        return $this->_getExtensionAttributes();
-    }
-
-    public function setExtensionAttributes($extensionAttributes)
-    {
-        return $this->_setExtensionAttributes($extensionAttributes);
     }
 }

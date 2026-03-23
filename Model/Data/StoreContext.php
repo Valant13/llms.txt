@@ -2,9 +2,9 @@
 
 namespace MageOS\LlmTxt\Model\Data;
 
-use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Framework\DataObject;
 
-class StoreContext extends AbstractExtensibleModel
+class StoreContext extends DataObject
 {
     public const KEY_STORE_ID = 'store_id';
     public const KEY_NAME = 'name';
@@ -100,15 +100,5 @@ class StoreContext extends AbstractExtensibleModel
     public function setCmsPages(?array $cmsPages): self
     {
         return $this->setData(self::KEY_CMS_PAGES, $cmsPages);
-    }
-
-    public function getExtensionAttributes()
-    {
-        return $this->_getExtensionAttributes();
-    }
-
-    public function setExtensionAttributes($extensionAttributes)
-    {
-        return $this->_setExtensionAttributes($extensionAttributes);
     }
 }

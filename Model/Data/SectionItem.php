@@ -2,9 +2,9 @@
 
 namespace MageOS\LlmTxt\Model\Data;
 
-use Magento\Framework\Model\AbstractExtensibleModel;
+use Magento\Framework\DataObject;
 
-class SectionItem extends AbstractExtensibleModel
+class SectionItem extends DataObject
 {
     public const KEY_NAME = 'name';
     public const KEY_URL = 'url';
@@ -38,15 +38,5 @@ class SectionItem extends AbstractExtensibleModel
     public function setDescription(?string $description): self
     {
         return $this->setData(self::KEY_DESCRIPTION, $description);
-    }
-
-    public function getExtensionAttributes()
-    {
-        return $this->_getExtensionAttributes();
-    }
-
-    public function setExtensionAttributes(SectionItemExtensionInterface $extensionAttributes)
-    {
-        return $this->_setExtensionAttributes($extensionAttributes);
     }
 }
