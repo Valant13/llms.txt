@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Service;
 
-use MageOS\LlmTxt\Model\Data\SectionItem;
-use MageOS\LlmTxt\Model\Data\StoreContext;
+use MageOS\LlmTxt\Data\SectionItem;
+use MageOS\LlmTxt\Data\StoreContext;
 
 class PromptBuilder
 {

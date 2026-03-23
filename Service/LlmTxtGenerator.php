@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Service;
 
-use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
-use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParamsFactory;
-use MageOS\LlmTxt\Model\OpenAi\Client as OpenAiClient;
+use MageOS\LlmTxt\Client\OpenAi\ResponsesParams;
+use MageOS\LlmTxt\Client\OpenAi\ResponsesParamsFactory;
+use MageOS\LlmTxt\Client\OpenAi\Client as OpenAiClient;
+use MageOS\LlmTxt\Config\Config;
 use Psr\Log\LoggerInterface;
 
 class LlmTxtGenerator

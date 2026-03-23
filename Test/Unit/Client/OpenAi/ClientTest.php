@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Test\Unit\Model\OpenAi;
+namespace MageOS\LlmTxt\Test\Unit\Client\OpenAi;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
-use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
-use MageOS\LlmTxt\Model\OpenAi\Client;
+use MageOS\LlmTxt\Client\OpenAi\ResponsesParams;
+use MageOS\LlmTxt\Client\OpenAi\Client;
 
 final class ClientTest extends TestCase
 {

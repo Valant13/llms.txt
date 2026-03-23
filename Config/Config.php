@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Store\Model\ScopeInterface;
+use MageOS\LlmTxt\Service\CsvSerializer;
 
 class Config
 {

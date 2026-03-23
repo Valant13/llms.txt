@@ -1,11 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model\OpenAi;
+namespace MageOS\LlmTxt\Client\OpenAi;
 
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
-use MageOS\LlmTxt\Model\Config;
-use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
+use MageOS\LlmTxt\Config\Config;
+use MageOS\LlmTxt\Client\OpenAi\ResponsesParams;
 
 class Client
 {

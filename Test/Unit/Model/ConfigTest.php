@@ -8,7 +8,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use MageOS\LlmTxt\Model\Config;
+use MageOS\LlmTxt\Config\Config;
 
 final class ConfigTest extends TestCase
 {

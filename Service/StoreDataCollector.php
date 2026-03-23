@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Service;
 
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
@@ -14,9 +14,10 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\Data\SectionItemFactory;
-use MageOS\LlmTxt\Model\Data\StoreContext;
-use MageOS\LlmTxt\Model\Data\StoreContextFactory;
+use MageOS\LlmTxt\Data\SectionItemFactory;
+use MageOS\LlmTxt\Data\StoreContext;
+use MageOS\LlmTxt\Data\StoreContextFactory;
+use MageOS\LlmTxt\Config\Config;
 
 class StoreDataCollector
 {

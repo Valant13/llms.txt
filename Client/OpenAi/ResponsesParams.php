@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model\Data\OpenAi;
+namespace MageOS\LlmTxt\Client\OpenAi;
 
 use Magento\Framework\DataObject;
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Service;
 
 class CsvSerializer
 {

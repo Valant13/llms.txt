@@ -6,8 +6,8 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\Config;
-use MageOS\LlmTxt\Model\LlmTxtProvider;
+use MageOS\LlmTxt\Config\Config;
+use MageOS\LlmTxt\Service\LlmTxtProvider;
 
 class Data extends AbstractBlock implements IdentityInterface
 {

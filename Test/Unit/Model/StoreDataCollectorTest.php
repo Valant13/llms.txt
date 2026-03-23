@@ -19,7 +19,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use MageOS\LlmTxt\Model\StoreDataCollector;
+use MageOS\LlmTxt\Service\StoreDataCollector;
 
 final class StoreDataCollectorTest extends TestCase
 {

@@ -9,7 +9,7 @@ use Magento\Store\Api\Data\StoreInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use MageOS\LlmTxt\Model\Config;
+use MageOS\LlmTxt\Config\Config;
 use MageOS\LlmTxt\Model\Generator;
 
 final class GeneratorTest extends TestCase

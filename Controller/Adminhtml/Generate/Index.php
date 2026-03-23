@@ -7,7 +7,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\LlmTxtGenerator;
+use MageOS\LlmTxt\Service\LlmTxtGenerator;
 
 class Index implements HttpPostActionInterface
 {

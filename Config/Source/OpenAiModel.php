@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model\Config\Source;
+namespace MageOS\LlmTxt\Config\Source;
 
 use Magento\Framework\Data\OptionSourceInterface;
 

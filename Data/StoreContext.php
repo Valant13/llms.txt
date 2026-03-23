@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model\Data;
+namespace MageOS\LlmTxt\Data;
 
 use Magento\Framework\DataObject;
 

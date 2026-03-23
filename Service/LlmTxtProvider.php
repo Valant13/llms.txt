@@ -1,8 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace MageOS\LlmTxt\Model;
+namespace MageOS\LlmTxt\Service;
 
 use Magento\Store\Model\StoreManagerInterface;
+use MageOS\LlmTxt\Config\Config;
 
 class LlmTxtProvider
 {
