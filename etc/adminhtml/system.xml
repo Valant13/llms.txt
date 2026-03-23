@@ -79,7 +79,11 @@
                 </field>
                 <field id="category_ids" translate="label comment" type="textarea" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Category IDs</label>
-                    <comment><![CDATA[Comma-separated list of <b>category IDs</b> to include (e.g. 5, 12, 34). Specify up to 10 categories that best represent your store. The <b>Meta Description</b> of each category is used as its description in the generated content.]]></comment>
+                    <comment><![CDATA[
+                        Comma-separated list of <b>category IDs</b> to include (e.g. 5, 12, 34). Specify up to 10 categories that best represent your store.
+                        <br><br>
+                        <b class="colorRed">Important!</b> Make sure the Meta Description fields are filled in.
+                    ]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedIntegers</backend_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -87,7 +91,11 @@
                 </field>
                 <field id="product_skus" translate="label comment" type="textarea" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Product SKUs</label>
-                    <comment><![CDATA[Comma-separated list of <b>product SKUs</b> to include (e.g. SKU-001, SKU-002). Specify up to 10 products that best represent your store. The <b>Meta Description</b> of each product is used as its description in the generated content.]]></comment>
+                    <comment><![CDATA[
+                        Comma-separated list of <b>product SKUs</b> to include (e.g. SKU-001, SKU-002). Specify up to 10 products that best represent your store.
+                        <br><br>
+                        <b class="colorRed">Important!</b> Make sure the Meta Description fields are filled in.
+                    ]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedStrings</backend_model>
                     <depends>
                         <field id="enabled">1</field>
@@ -95,7 +103,11 @@
                 </field>
                 <field id="cms_page_identifiers" translate="label comment" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>CMS Page Identifiers</label>
-                    <comment><![CDATA[Comma-separated list of <b>CMS page identifiers</b> to include (e.g. about-us, contact-us). Specify up to 10 pages that best represent your store. The <b>Meta Description</b> of each page is used as its description in the generated content.]]></comment>
+                    <comment><![CDATA[
+                        Comma-separated list of <b>CMS page identifiers</b> to include (e.g. about-us, contact-us). Specify up to 10 pages that best represent your store.
+                        <br><br>
+                        <b class="colorRed">Important!</b> Make sure the Meta Description fields are filled in.
+                    ]]></comment>
                     <backend_model>MageOS\LlmTxt\Config\Backend\CommaSeparatedStrings</backend_model>
                     <depends>
                         <field id="enabled">1</field>
