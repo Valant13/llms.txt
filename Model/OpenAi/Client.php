@@ -5,6 +5,7 @@ namespace MageOS\LlmTxt\Model\OpenAi;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Exception\RequestException;
 use MageOS\LlmTxt\Model\Config;
+use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
 
 class Client
 {
@@ -16,19 +17,14 @@ class Client
         private readonly Config $config,
     ) {}
 
-    public function postResponses(
-        string $model,
-        string $prompt,
-        string $instructions,
-        int $maxOutputTokens,
-        float $temperature = 0.7
-    ): string {
+    public function postResponses(ResponsesParams $params): string
+    {
         $apiKey = $this->config->getOpenAiApiKey();
         if (empty($apiKey)) {
             throw new \RuntimeException('OpenAI API key is not configured');
         }
 
-        $requestBody = $this->buildRequestBody($apiKey, $model, $prompt, $instructions, $maxOutputTokens, $temperature);
+        $requestBody = $this->buildRequestBody($apiKey, $params);
 
         try {
             $response = $this->httpClient->post(self::BASE_URL . '/v1/responses', $requestBody);
@@ -52,14 +48,8 @@ class Client
         }
     }
 
-    private function buildRequestBody(
-        string $apiKey,
-        string $model,
-        string $prompt,
-        string $instructions,
-        int $maxOutputTokens,
-        float $temperature
-    ): array {
+    private function buildRequestBody(string $apiKey, ResponsesParams $params): array
+    {
         $body = [
             'timeout' => self::TIMEOUT,
             'headers' => [
@@ -67,15 +57,15 @@ class Client
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => $model,
-                'instructions' => $instructions,
-                'input' => $prompt,
-                'max_output_tokens' => $maxOutputTokens,
+                'model' => $params->getModel(),
+                'instructions' => $params->getInstructions(),
+                'input' => $params->getPrompt(),
+                'max_output_tokens' => $params->getMaxOutputTokens(),
             ],
         ];
 
-        if ($this->isTemperatureSupported($model)) {
-            $body['json']['temperature'] = $temperature;
+        if ($this->isTemperatureSupported($params->getModel())) {
+            $body['json']['temperature'] = $params->getTemperature();
         }
 
         return $body;

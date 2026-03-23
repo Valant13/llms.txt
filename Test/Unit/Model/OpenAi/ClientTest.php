@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Log\LoggerInterface;
+use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
 use MageOS\LlmTxt\Model\OpenAi\Client;
 
 final class ClientTest extends TestCase
@@ -22,6 +23,7 @@ final class ClientTest extends TestCase
     private EncryptorInterface|MockObject $encryptor;
     private HttpClient|MockObject $httpClient;
     private LoggerInterface|MockObject $logger;
+    private ResponsesParams|MockObject $request;
 
     protected function setUp(): void
     {
@@ -29,6 +31,13 @@ final class ClientTest extends TestCase
         $this->encryptor = $this->createMock(EncryptorInterface::class);
         $this->httpClient = $this->createMock(HttpClient::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+
+        $this->request = $this->createMock(ResponsesParams::class);
+        $this->request->method('getModel')->willReturn('gpt-4o-mini');
+        $this->request->method('getPrompt')->willReturn('prompt');
+        $this->request->method('getInstructions')->willReturn('instructions');
+        $this->request->method('getMaxOutputTokens')->willReturn(2000);
+        $this->request->method('getTemperature')->willReturn(0.7);
 
         $this->client = new Client(
             $this->scopeConfig,
@@ -46,7 +55,7 @@ final class ClientTest extends TestCase
         $this->scopeConfig->method('getValue')->willReturn('');
         $this->encryptor->method('decrypt')->willReturn('');
 
-        $this->client->postResponses([], 1);
+        $this->client->postResponses($this->request);
     }
 
     public function test_generate_llms_txt_returns_content_on_success(): void
@@ -92,7 +101,7 @@ final class ClientTest extends TestCase
             ->method('post')
             ->willReturn($response);
 
-        $result = $this->client->postResponses($storeData, 1);
+        $result = $this->client->postResponses($this->request);
 
         $this->assertSame($expectedContent, $result);
     }
@@ -117,7 +126,7 @@ final class ClientTest extends TestCase
 
         $this->httpClient->method('post')->willThrowException($exception);
 
-        $this->client->postResponses(['store_name' => 'Test'], 1);
+        $this->client->postResponses($this->request);
     }
 
     public function test_generate_llms_txt_handles_rate_limit_error(): void
@@ -140,7 +149,7 @@ final class ClientTest extends TestCase
 
         $this->httpClient->method('post')->willThrowException($exception);
 
-        $this->client->postResponses(['store_name' => 'Test'], 1);
+        $this->client->postResponses($this->request);
     }
 
     public function test_generate_llms_txt_logs_errors(): void
@@ -165,7 +174,7 @@ final class ClientTest extends TestCase
             ->with('OpenAI API request failed', $this->anything());
 
         try {
-            $this->client->postResponses(['store_name' => 'Test'], 1);
+            $this->client->postResponses($this->request);
         } catch (\RuntimeException $e) {
             // Expected
         }

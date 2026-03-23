@@ -2,6 +2,8 @@
 
 namespace MageOS\LlmTxt\Model;
 
+use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParams;
+use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParamsFactory;
 use MageOS\LlmTxt\Model\OpenAi\Client as OpenAiClient;
 use Psr\Log\LoggerInterface;
 
@@ -17,6 +19,7 @@ class LlmsTxtGenerator
         private readonly Config $config,
         private readonly PromptBuilder $promptBuilder,
         private readonly LoggerInterface $logger,
+        private readonly ResponsesParamsFactory $responsesParamsFactory,
     ) {}
 
     public function generateLlmsTxt(int $storeId): string
@@ -30,13 +33,15 @@ class LlmsTxtGenerator
             $this->logger->info('LlmsTxt prompt', ['store_id' => $storeId, 'model' => $model, 'prompt' => $prompt]);
         }
 
-        return $this->openAiClient->postResponses(
-            $model,
-            $prompt,
-            self::INSTRUCTIONS,
-            self::MAX_OUTPUT_TOKENS,
-            self::TEMPERATURE
-        );
+        /** @var ResponsesParams $params */
+        $params = $this->responsesParamsFactory->create()
+            ->setModel($model)
+            ->setPrompt($prompt)
+            ->setInstructions(self::INSTRUCTIONS)
+            ->setMaxOutputTokens(self::MAX_OUTPUT_TOKENS)
+            ->setTemperature(self::TEMPERATURE);
+
+        return $this->openAiClient->postResponses($params);
     }
 
     public function estimateTokenCount(string $content): int
