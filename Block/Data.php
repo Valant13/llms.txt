@@ -6,7 +6,6 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Config\Config;
 use MageOS\LlmTxt\Service\LlmTxtProvider;
 
 class Data extends AbstractBlock implements IdentityInterface
@@ -15,7 +14,6 @@ class Data extends AbstractBlock implements IdentityInterface
 
     public function __construct(
         private readonly LlmTxtProvider $llmTxtProvider,
-        private readonly Config $config,
         private readonly StoreManagerInterface $storeManager,
         Context $context,
         array $data = []
@@ -27,10 +25,6 @@ class Data extends AbstractBlock implements IdentityInterface
     {
         try {
             $storeId = (int) $this->storeManager->getStore()->getId();
-
-            if (!$this->config->isEnabled($storeId)) {
-                return '';
-            }
 
             return $this->llmTxtProvider->get($storeId) . PHP_EOL;
         } catch (\Exception $e) {
