@@ -7,7 +7,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\LlmsTxtGenerator;
+use MageOS\LlmTxt\Model\LlmTxtGenerator;
 
 class Index implements HttpPostActionInterface
 {
@@ -17,7 +17,7 @@ class Index implements HttpPostActionInterface
         private readonly RequestInterface $request,
         private readonly JsonFactory $resultJsonFactory,
         private readonly StoreManagerInterface $storeManager,
-        private readonly LlmsTxtGenerator $llmsTxtGenerator,
+        private readonly LlmTxtGenerator $llmTxtGenerator,
     ) {}
 
     public function execute(): Json
@@ -30,8 +30,8 @@ class Index implements HttpPostActionInterface
                 $storeId = (int) $this->storeManager->getDefaultStoreView()->getId();
             }
 
-            $generatedContent = $this->llmsTxtGenerator->generateLlmsTxt($storeId);
-            $tokenCount = $this->llmsTxtGenerator->estimateTokenCount($generatedContent);
+            $generatedContent = $this->llmTxtGenerator->generateLlmTxt($storeId);
+            $tokenCount = $this->llmTxtGenerator->estimateTokenCount($generatedContent);
 
             return $result->setData([
                 'success' => true,

@@ -11,11 +11,11 @@ use Magento\Framework\App\Route\ConfigInterface;
 use Magento\Framework\App\Router\ActionList;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use MageOS\LlmTxt\Controller\Router\LlmsTxtRouter;
+use MageOS\LlmTxt\Controller\Router\LlmTxtRouter;
 
-final class LlmsTxtRouterTest extends TestCase
+final class LlmTxtRouterTest extends TestCase
 {
-    private LlmsTxtRouter $router;
+    private LlmTxtRouter $router;
     private ActionFactory|MockObject $actionFactory;
     private ActionList|MockObject $actionList;
     private ConfigInterface|MockObject $routeConfig;
@@ -26,7 +26,7 @@ final class LlmsTxtRouterTest extends TestCase
         $this->actionList = $this->createMock(ActionList::class);
         $this->routeConfig = $this->createMock(ConfigInterface::class);
 
-        $this->router = new LlmsTxtRouter(
+        $this->router = new LlmTxtRouter(
             $this->actionFactory,
             $this->actionList,
             $this->routeConfig

@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Controller\Router;
 
@@ -11,7 +9,7 @@ use Magento\Framework\App\Route\ConfigInterface;
 use Magento\Framework\App\Router\ActionList;
 use Magento\Framework\App\RouterInterface;
 
-class LlmsTxtRouter implements RouterInterface
+class LlmTxtRouter implements RouterInterface
 {
     public function __construct(
         private readonly ActionFactory $actionFactory,

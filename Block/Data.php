@@ -7,14 +7,14 @@ use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Store\Model\StoreManagerInterface;
 use MageOS\LlmTxt\Model\Config;
-use MageOS\LlmTxt\Model\LlmsTxtProvider;
+use MageOS\LlmTxt\Model\LlmTxtProvider;
 
 class Data extends AbstractBlock implements IdentityInterface
 {
     private const CACHE_TAG = 'llmtxt';
 
     public function __construct(
-        private readonly LlmsTxtProvider $llmsTxtProvider,
+        private readonly LlmTxtProvider $llmTxtProvider,
         private readonly Config $config,
         private readonly StoreManagerInterface $storeManager,
         Context $context,
@@ -32,7 +32,7 @@ class Data extends AbstractBlock implements IdentityInterface
                 return '';
             }
 
-            return $this->llmsTxtProvider->get($storeId) . PHP_EOL;
+            return $this->llmTxtProvider->get($storeId) . PHP_EOL;
         } catch (\Exception $e) {
             $this->_logger->error($e->getMessage(), ['exception' => $e]);
 

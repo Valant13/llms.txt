@@ -13,7 +13,7 @@
             </argument>
         </arguments>
     </virtualType>
-    <type name="MageOS\LlmTxt\Model\LlmsTxtGenerator">
+    <type name="MageOS\LlmTxt\Model\LlmTxtGenerator">
         <arguments>
             <argument name="logger" xsi:type="object">MageOS\LlmTxt\Logger\Logger</argument>
         </arguments>

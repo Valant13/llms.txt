@@ -4,7 +4,7 @@ namespace MageOS\LlmTxt\Model;
 
 use Magento\Store\Model\StoreManagerInterface;
 
-class LlmsTxtProvider
+class LlmTxtProvider
 {
     public function __construct(
         private readonly StoreManagerInterface $storeManager,

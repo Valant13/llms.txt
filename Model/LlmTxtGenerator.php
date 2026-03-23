@@ -7,7 +7,7 @@ use MageOS\LlmTxt\Model\Data\OpenAi\ResponsesParamsFactory;
 use MageOS\LlmTxt\Model\OpenAi\Client as OpenAiClient;
 use Psr\Log\LoggerInterface;
 
-class LlmsTxtGenerator
+class LlmTxtGenerator
 {
     public const INSTRUCTIONS = 'You are an expert at creating concise, well-structured llms.txt files that help AI systems understand website content. You follow the llmstxt.org standard precisely.';
     public const MAX_OUTPUT_TOKENS = 2000;
@@ -22,7 +22,7 @@ class LlmsTxtGenerator
         private readonly ResponsesParamsFactory $responsesParamsFactory,
     ) {}
 
-    public function generateLlmsTxt(int $storeId): string
+    public function generateLlmTxt(int $storeId): string
     {
         $storeData = $this->storeDataCollector->collect($storeId);
 
@@ -30,7 +30,7 @@ class LlmsTxtGenerator
         $prompt = $this->promptBuilder->buildPrompt($storeData);
 
         if ($this->config->isLogPromptEnabled($storeId)) {
-            $this->logger->info('LlmsTxt prompt', ['store_id' => $storeId, 'model' => $model, 'prompt' => $prompt]);
+            $this->logger->info('LlmTxt prompt', ['store_id' => $storeId, 'model' => $model, 'prompt' => $prompt]);
         }
 
         /** @var ResponsesParams $params */

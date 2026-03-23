@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <virtualType name="llmstxtResultPage" type="Magento\Framework\View\Result\Page">
         <arguments>
             <argument name="template" xsi:type="string">MageOS_LlmTxt::llmstxt.phtml</argument>
@@ -20,7 +19,7 @@
         <arguments>
             <argument name="routerList" xsi:type="array">
                 <item name="llmstxt" xsi:type="array">
-                    <item name="class" xsi:type="string">MageOS\LlmTxt\Controller\Router\LlmsTxtRouter</item>
+                    <item name="class" xsi:type="string">MageOS\LlmTxt\Controller\Router\LlmTxtRouter</item>
                     <item name="disable" xsi:type="boolean">false</item>
                     <item name="sortOrder" xsi:type="string">22</item>
                 </item>
