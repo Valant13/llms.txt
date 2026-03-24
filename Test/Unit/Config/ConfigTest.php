@@ -60,26 +60,6 @@ final class ConfigTest extends TestCase
         $this->assertTrue($this->config->isEnabled(5));
     }
 
-    public function test_get_cache_lifetime_returns_integer_value(): void
-    {
-        $this->scopeConfig
-            ->method('getValue')
-            ->with(Config::XML_PATH_CACHE_LIFETIME, ScopeInterface::SCOPE_STORE, null)
-            ->willReturn('3600');
-
-        $this->assertSame(3600, $this->config->getCacheLifetime());
-    }
-
-    public function test_get_cache_lifetime_returns_zero_when_not_configured(): void
-    {
-        $this->scopeConfig
-            ->method('getValue')
-            ->with(Config::XML_PATH_CACHE_LIFETIME, ScopeInterface::SCOPE_STORE, null)
-            ->willReturn(null);
-
-        $this->assertSame(0, $this->config->getCacheLifetime());
-    }
-
     public function test_get_site_name_returns_configured_value(): void
     {
         $this->scopeConfig
@@ -297,7 +277,6 @@ final class ConfigTest extends TestCase
     public function test_xml_path_constants_have_expected_values(): void
     {
         $this->assertSame('llmtxt/general/enabled', Config::XML_PATH_ENABLED);
-        $this->assertSame('llmtxt/general/cache_lifetime', Config::XML_PATH_CACHE_LIFETIME);
         $this->assertSame('llmtxt/ai_generation/site_name', Config::XML_PATH_SITE_NAME);
         $this->assertSame('llmtxt/ai_generation/site_description', Config::XML_PATH_SITE_DESCRIPTION);
         $this->assertSame('llmtxt/openai/openai_api_key', Config::XML_PATH_OPENAI_API_KEY);

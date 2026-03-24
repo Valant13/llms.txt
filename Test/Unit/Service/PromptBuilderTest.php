@@ -18,15 +18,17 @@ final class PromptBuilderTest extends TestCase
 
     private function buildStoreContext(array $data = []): StoreContext
     {
+        $defaultItem = $this->makeSectionItem('Default', 'https://example.com/default', 'Default item');
+
         $context = new StoreContext();
         $context->setStoreId($data['store_id'] ?? 1);
         $context->setName($data['name'] ?? 'Test Store');
         $context->setDescription($data['description'] ?? null);
         $context->setUrl($data['url'] ?? 'https://example.com/');
         $context->setLocale($data['locale'] ?? 'en_US');
-        $context->setCategories($data['categories'] ?? []);
-        $context->setProducts($data['products'] ?? []);
-        $context->setCmsPages($data['cms_pages'] ?? []);
+        $context->setCategories($data['categories'] ?? [$defaultItem]);
+        $context->setProducts($data['products'] ?? [$defaultItem]);
+        $context->setCmsPages($data['cms_pages'] ?? [$defaultItem]);
 
         return $context;
     }
