@@ -6,6 +6,7 @@ use MageOS\LlmTxt\Client\OpenAi\Client as OpenAiClient;
 use MageOS\LlmTxt\Client\OpenAi\ResponsesParams;
 use MageOS\LlmTxt\Client\OpenAi\ResponsesParamsFactory;
 use MageOS\LlmTxt\Config\Config;
+use MageOS\LlmTxt\Data\SectionItem;
 use MageOS\LlmTxt\Data\StoreContext;
 use MageOS\LlmTxt\Service\LlmTxtGenerator;
 use MageOS\LlmTxt\Service\PromptBuilder;
@@ -56,6 +57,19 @@ final class LlmTxtGeneratorTest extends TestCase
         );
     }
 
+    private function makeStoreContext(): StoreContext
+    {
+        $item = new SectionItem();
+        $item->setName('Default');
+        $item->setUrl('https://example.com/default');
+        $item->setDescription('Default item');
+
+        $storeContext = new StoreContext();
+        $storeContext->setCategories([$item]);
+
+        return $storeContext;
+    }
+
     private function configureDefaultBehavior(
         string $model = 'gpt-4o',
         string $prompt = 'Test prompt',
@@ -63,7 +77,7 @@ final class LlmTxtGeneratorTest extends TestCase
         string $additionalContent = '',
         bool $logEnabled = false,
     ): StoreContext {
-        $storeContext = new StoreContext();
+        $storeContext = $this->makeStoreContext();
 
         $this->storeDataCollector->method('collect')->willReturn($storeContext);
         $this->config->method('getOpenAiModel')->willReturn($model);
@@ -123,7 +137,7 @@ final class LlmTxtGeneratorTest extends TestCase
 
     public function test_generate_llm_txt_collects_store_data_for_given_store_id(): void
     {
-        $storeContext = new StoreContext();
+        $storeContext = $this->makeStoreContext();
 
         $this->storeDataCollector
             ->method('collect')
