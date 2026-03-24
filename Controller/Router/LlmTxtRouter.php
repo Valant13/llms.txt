@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Controller\Router;
 
@@ -10,18 +8,23 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\Route\ConfigInterface;
 use Magento\Framework\App\Router\ActionList;
 use Magento\Framework\App\RouterInterface;
+use MageOS\LlmTxt\Config\Config;
 
-class LlmsTxtRouter implements RouterInterface
+class LlmTxtRouter implements RouterInterface
 {
     public function __construct(
         private readonly ActionFactory $actionFactory,
         private readonly ActionList $actionList,
-        private readonly ConfigInterface $routeConfig
-    ) {
-    }
+        private readonly ConfigInterface $routeConfig,
+        private readonly Config $config,
+    ) {}
 
     public function match(RequestInterface $request): ?ActionInterface
     {
+        if (!$this->config->isEnabled()) {
+            return null;
+        }
+
         $identifier = trim($request->getPathInfo(), '/');
 
         if ($identifier !== 'llms.txt') {
@@ -34,6 +37,7 @@ class LlmsTxtRouter implements RouterInterface
         }
 
         $actionClassName = $this->actionList->get($modules[0], null, 'index', 'index');
+
         return $this->actionFactory->create($actionClassName);
     }
 }

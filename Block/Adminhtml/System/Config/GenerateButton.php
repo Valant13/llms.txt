@@ -1,10 +1,9 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Block\Adminhtml\System\Config;
 
 use Magento\Backend\Block\Template\Context;
+use Magento\Backend\Block\Widget\Button;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
@@ -22,6 +21,7 @@ class GenerateButton extends Field
     public function render(AbstractElement $element): string
     {
         $element->unsScope()->unsCanUseWebsiteValue()->unsCanUseDefaultValue();
+
         return parent::render($element);
     }
 
@@ -32,13 +32,13 @@ class GenerateButton extends Field
 
     public function getButtonHtml(): string
     {
-        $button = $this->getLayout()->createBlock(
-            \Magento\Backend\Block\Widget\Button::class
-        )->setData([
-            'id' => 'llmtxt_generate_button',
-            'label' => __('Generate with AI'),
-            'class' => 'action-default scalable',
-        ]);
+        $button = $this->getLayout()
+            ->createBlock(Button::class)
+            ->setData([
+                'id' => 'llmtxt_generate_button',
+                'label' => __('Generate with AI'),
+                'class' => 'action-default scalable',
+            ]);
 
         return $button->toHtml();
     }

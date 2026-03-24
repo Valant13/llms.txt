@@ -1,6 +1,6 @@
 {
     "name": "mage-os/module-llm-txt",
-    "description": "AI-powered LLM.txt generation for Magento 2 / Mage-OS stores. Help AI systems understand your store with OpenAI-generated content.",
+    "description": "AI-powered LLMs.txt generation for Magento 2 / Mage-OS stores. Help AI systems understand your store with OpenAI-generated content.",
     "type": "magento2-module",
     "license": "MIT",
     "keywords": ["magento2", "mage-os", "llms-txt", "ai", "openai", "seo"],
@@ -10,6 +10,7 @@
             "email": "hello@mage-os.org"
         }
     ],
+    "version": "0.0.1",
     "require": {
         "magento/framework": "^103.0",
         "guzzlehttp/guzzle": "^7.0"

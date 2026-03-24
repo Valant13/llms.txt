@@ -1,21 +1,19 @@
-# LLM.txt for Magento 2 / Mage-OS
+# LLMs.txt for Magento 2 / Mage-OS
 
-AI-powered LLM.txt generation module for Magento 2 and Mage-OS stores. Automatically creates optimized `llms.txt` files using OpenAI to help AI systems understand your store content.
+AI-powered LLMs.txt generation module for Magento 2 and Mage-OS stores. Automatically creates optimized `llms.txt` files using OpenAI to help AI systems understand your store content.
 
-## What is LLM.txt?
+## What is LLMs.txt?
 
-LLM.txt is a proposed standard (similar to `robots.txt`) that helps AI systems like ChatGPT, Claude, and others better understand your website by providing a concise, structured summary of your most important content.
+LLMs.txt is a proposed standard (similar to `robots.txt`) that helps AI systems like ChatGPT, Claude, and others better understand your website by providing a concise, structured summary of your most important content.
 
 Learn more: [llmstxt.org](https://llmstxt.org)
 
 ## Features
 
 - 🤖 **AI-Powered Generation** - Uses OpenAI to intelligently curate your store content
-- 📝 **Smart Content Selection** - Automatically analyzes categories, products, and pages
 - ⚡ **One-Click Generation** - Click a button, review, and publish
 - ✏️ **Fully Editable** - Edit AI-generated content or write your own
 - 🏪 **Multi-Store Support** - Different content per store view
-- 🚀 **Performance Optimized** - Full Page Cache integration
 - 📊 **Token Counter** - Ensures content stays under recommended limits
 - 🎯 **Standards Compliant** - Follows llmstxt.org specification
 
@@ -31,16 +29,19 @@ bin/magento cache:flush
 
 ## Configuration
 
-1. Navigate to: **Stores → Configuration → AI → LLM.txt**
+1. Navigate to: **Stores → Configuration → AI → LLMs.txt**
 
 2. **General Settings**
    - Enable the module
-   - Set site name (optional, defaults to store name)
-   - Add site description
-
-3. **AI-Powered Generation**
    - Enter your OpenAI API key ([get one here](https://platform.openai.com/api-keys))
    - Select AI model (GPT-4o Mini recommended for speed and cost)
+
+3. **AI-Powered Generation**
+   - Set site name
+   - Add site description
+   - Specify up to 10 categories that best represent your store
+   - Specify up to 10 products that best represent your store
+   - Specify up to 10 CMS pages that best represent your store
    - Click **"Generate with AI"**
 
 4. **Review & Edit**
@@ -100,6 +101,8 @@ Don't want to use AI? No problem:
 ## Cost
 
 OpenAI API usage is minimal:
+- ~$0.001 per generation with GPT-5 Mini
+- ~$0.010 per generation with GPT-5.4
 - ~$0.001 per generation with GPT-4o Mini
 - ~$0.005 per generation with GPT-4o
 
@@ -109,18 +112,12 @@ You only pay when clicking "Generate with AI".
 
 ### Architecture
 
-- **Custom Router** - Matches `/llms.txt` path (follows `Magento_Robots` pattern)
-- **Page Layout System** - Uses virtualType for plain text output
-- **Block Rendering** - FPC integration via cache identities
-- **AI Integration** - OpenAI API client with error handling
-- **Store-Scoped Config** - All settings respect store scope
-
-### Caching
-
-- Content cached in Full Page Cache
-- Cache tags: `llmtxt_{store_id}`
-- Configurable TTL (default: 24 hours)
-- Invalidate via admin or CLI
+- **Custom Router** - Intercepts `/llms.txt` requests at sort order 22, only when module is enabled
+- **Custom Page Layout** - Minimal layout with empty root container; renders plain text without Magento header/footer
+- **Store Data Collector** - Collects configured categories, products, and CMS pages with meta descriptions using store emulation
+- **Prompt Builder** - Formats collected store data into a structured OpenAI prompt with llms.txt specification constraints
+- **LLMs.txt Generator** - Orchestrates generation: collect → build prompt → call API → append additional content
+- **OpenAI Client** - Sends requests to `https://api.openai.com/v1/responses` via Guzzle
 
 ## Testing
 
@@ -157,7 +154,7 @@ Contributions welcome! Please:
 
 ## Related Resources
 
-- [LLM.txt Official Site](https://llmstxt.org)
-- [LLM.txt Directory](https://llmtxt.app)
+- [LLMs.txt Official Site](https://llmstxt.org)
+- [LLMs.txt Directory](https://llmtxt.app)
 - [OpenAI Platform](https://platform.openai.com)
 - [Mage-OS](https://mage-os.org)

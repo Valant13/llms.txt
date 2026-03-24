@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace MageOS\LlmTxt\Controller\Adminhtml\Generate;
 
@@ -9,9 +7,7 @@ use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
-use MageOS\LlmTxt\Model\Generator;
-use MageOS\LlmTxt\Model\OpenAi\Client as OpenAiClient;
-use MageOS\LlmTxt\Model\StoreDataCollector;
+use MageOS\LlmTxt\Service\LlmTxtGenerator;
 
 class Index implements HttpPostActionInterface
 {
@@ -20,10 +16,8 @@ class Index implements HttpPostActionInterface
     public function __construct(
         private readonly RequestInterface $request,
         private readonly JsonFactory $resultJsonFactory,
-        private readonly OpenAiClient $openAiClient,
-        private readonly StoreDataCollector $storeDataCollector,
-        private readonly Generator $generator,
-        private readonly StoreManagerInterface $storeManager
+        private readonly StoreManagerInterface $storeManager,
+        private readonly LlmTxtGenerator $llmTxtGenerator,
     ) {}
 
     public function execute(): Json
@@ -36,14 +30,8 @@ class Index implements HttpPostActionInterface
                 $storeId = (int) $this->storeManager->getDefaultStoreView()->getId();
             }
 
-            // Collect store data
-            $storeData = $this->storeDataCollector->collect($storeId);
-
-            // Generate via OpenAI
-            $generatedContent = $this->openAiClient->generateLlmsTxt($storeData, $storeId);
-
-            // Estimate tokens
-            $tokenCount = $this->generator->estimateTokenCount($generatedContent);
+            $generatedContent = $this->llmTxtGenerator->generateLlmTxt($storeId);
+            $tokenCount = $this->llmTxtGenerator->estimateTokenCount($generatedContent);
 
             return $result->setData([
                 'success' => true,
@@ -51,7 +39,6 @@ class Index implements HttpPostActionInterface
                 'tokens' => $tokenCount,
                 'message' => __('Content generated successfully! Token count: %1', $tokenCount)
             ]);
-
         } catch (\Exception $e) {
             return $result->setData([
                 'success' => false,

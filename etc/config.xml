@@ -1,14 +1,13 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
     <default>
         <llmtxt>
             <general>
                 <enabled>0</enabled>
-                <cache_lifetime>86400</cache_lifetime>
             </general>
             <ai_generation>
-                <openai_model>gpt-4o-mini</openai_model>
+                <openai_model>gpt-5.4</openai_model>
+                <log_prompt>0</log_prompt>
             </ai_generation>
             <content>
                 <use_manual_content>0</use_manual_content>
