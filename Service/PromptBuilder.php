@@ -2,6 +2,7 @@
 
 namespace MageOS\LlmTxt\Service;
 
+use Magento\Framework\Exception\LocalizedException;
 use MageOS\LlmTxt\Data\SectionItem;
 use MageOS\LlmTxt\Data\StoreContext;
 
@@ -11,6 +12,12 @@ class PromptBuilder
 
     public function buildPrompt(StoreContext $storeData): string
     {
+        $sectionCount = $this->countSections($storeData);
+        if (!$sectionCount) {
+            $fields = join(', ', ['Category IDs', 'Product SKUs', 'CMS Page Identifiers']);
+            throw new LocalizedException(__('At least one of the following fields must be filled: %1.', $fields));
+        }
+
         $descriptionLine = $storeData->getDescription() ? 'Store Description: ' . $storeData->getDescription() : null;
 
         $categorySection = $this->formatSection('Top Categories', $storeData->getCategories() ?: []);
@@ -33,7 +40,7 @@ Optional additional context paragraph
 REQUIREMENTS:
 1. Start with store name as H1
 2. Include engaging blockquote description
-3. Organize content into 2-4 logical H2 sections (e.g., "Categories", "Featured Products", "Customer Resources")
+3. Organize content into $sectionCount logical H2 section(s) (e.g., "Categories", "Featured Products", "Customer Resources")
 4. Use clear, concise language
 5. Keep TOTAL output under 1500 words / 2000 tokens
 6. Only include the most important/representative items
@@ -45,13 +52,13 @@ STORE DATA:
 Store Name: {$storeData->getName()}
 Store URL: {$storeData->getUrl()}
 Store Locale: {$storeData->getLocale()}
-{$descriptionLine}
+$descriptionLine
 
-{$categorySection}
+$categorySection
 
-{$productSection}
+$productSection
 
-{$pageSection}
+$pageSection
 
 Generate ONLY the llms.txt content. No explanations or preamble.
 PROMPT;
@@ -78,5 +85,16 @@ PROMPT;
         }
 
         return $sectionName . ":\n" . implode("\n", $lines);
+    }
+
+    private function countSections(StoreContext $storeContext): int
+    {
+        $sectionCandidates = [
+            $storeContext->getProducts(),
+            $storeContext->getCategories(),
+            $storeContext->getCmsPages(),
+        ];
+
+        return count(array_filter($sectionCandidates));
     }
 }

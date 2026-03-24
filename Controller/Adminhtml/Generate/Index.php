@@ -39,7 +39,6 @@ class Index implements HttpPostActionInterface
                 'tokens' => $tokenCount,
                 'message' => __('Content generated successfully! Token count: %1', $tokenCount)
             ]);
-
         } catch (\Exception $e) {
             return $result->setData([
                 'success' => false,
