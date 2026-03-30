@@ -134,6 +134,7 @@
                     <label>Generated Content</label>
                     <comment>This content will be served at /llms.txt. Edit as needed.</comment>
                     <frontend_class>llmtxt-content-editor</frontend_class>
+                    <backend_model>MageOS\LlmTxt\Config\Backend\GeneratedContent</backend_model>
                     <depends>
                         <field id="*/*/enabled">1</field>
                     </depends>
