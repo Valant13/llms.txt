@@ -5,8 +5,10 @@
             <general>
                 <enabled>0</enabled>
             </general>
-            <ai_generation>
+            <openai>
                 <openai_model>gpt-5.4</openai_model>
+            </openai>
+            <ai_generation>
                 <log_prompt>0</log_prompt>
             </ai_generation>
             <content>

@@ -37,10 +37,11 @@ REQUIREMENTS:
 3. Organize content into $sectionCount logical H2 section(s) (e.g., "Categories", "Featured Products", "Customer Resources")
 4. Use clear, concise language
 5. Keep TOTAL output under 1500 words / 2000 tokens
-6. Only include the most important/representative items
-7. Make descriptions compelling but brief
-8. Remove repetitive marketing phrases and SEO-like noise
-9. Write all text only in the language of the store locale
+6. Replace all typographic ligatures with their standard ASCII equivalents
+7. Do not replace letters with diacritical marks (e.g., ä, ö, ü, é, ñ, ç) with ASCII equivalents. Preserve all original characters with diacritics
+8. Make descriptions compelling but brief
+9. Remove repetitive marketing phrases and SEO-like noise
+10. Write all text only in the language of the store locale
 
 STORE DATA:
 Store Name: {$storeData->getName()}

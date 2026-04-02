@@ -6,12 +6,12 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\StoreGraphQl\Model\Resolver\Store\ConfigIdentity;
+use MageOS\LlmTxt\Config\Backend\GeneratedContent;
 use MageOS\LlmTxt\Service\LlmTxtProvider;
 
 class Data extends AbstractBlock implements IdentityInterface
 {
-    private const CACHE_TAG = 'llmtxt';
-
     public function __construct(
         private readonly LlmTxtProvider $llmTxtProvider,
         private readonly StoreManagerInterface $storeManager,
@@ -36,8 +36,11 @@ class Data extends AbstractBlock implements IdentityInterface
 
     public function getIdentities(): array
     {
+        $storeId = (int) $this->storeManager->getStore()->getId();
+
         return [
-            self::CACHE_TAG . '_' . $this->storeManager->getStore()->getId(),
+            GeneratedContent::CACHE_TAG . '_' . $storeId,
+            ConfigIdentity::CACHE_TAG . '_' . $storeId,
         ];
     }
 }
